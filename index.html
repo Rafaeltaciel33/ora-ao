@@ -108,13 +108,12 @@
     <section id="lista" class="mb-16">
       <h2 class="text-3xl font-bold text-indigo-800 mb-6 text-center font-montserrat">Pedidos Recentes</h2>
       <ul id="lista-pedidos" class="space-y-6 max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-6">
-        <!-- Exemplo de pedido -->
+        <!-- Exemplo de pedido fixo -->
         <li class="border-b border-indigo-200 pb-4 last:border-none">
           <p class="text-indigo-900 font-semibold">Maria Clara</p>
           <p class="text-indigo-700 italic">Por saúde e paz para minha família.</p>
           <time datetime="2024-06-01T10:30" class="text-indigo-400 text-sm block mt-1">01 de junho de 2024</time>
         </li>
-        <!-- Mais pedidos podem ser adicionados aqui -->
       </ul>
     </section>
 
@@ -146,7 +145,7 @@
   </footer>
 
   <script>
-    // Script para abrir/fechar menu mobile
+    // Menu mobile toggle
     const btnMenu = document.getElementById('btn-menu');
     const mobileMenu = document.getElementById('mobile-menu');
 
@@ -154,13 +153,15 @@
       mobileMenu.classList.toggle('hidden');
     });
 
-    // Script simples para exibir mensagem após submissão do formulário (simulado)
+    // Enviar pedido e atualizar lista
     const formOracao = document.getElementById('form-oracao');
     const formMessage = document.getElementById('form-message');
+    const listaPedidos = document.getElementById('lista-pedidos');
 
     formOracao.addEventListener('submit', (e) => {
       e.preventDefault();
 
+      const nome = formOracao.nome.value.trim() || 'Anônimo';
       const pedido = formOracao.pedido.value.trim();
 
       if (!pedido) {
@@ -168,19 +169,38 @@
         return;
       }
 
-      // Aqui você pode adicionar a lógica para enviar o pedido ao servidor ou salvar localmente.
+      // Cria novo <li>
+      const novoPedido = document.createElement('li');
+      novoPedido.classList.add('border-b', 'border-indigo-200', 'pb-4', 'last:border-none');
 
+      const dataAtual = new Date();
+      const dataFormatada = dataAtual.toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      });
+
+      novoPedido.innerHTML = `
+        <p class="text-indigo-900 font-semibold">${nome}</p>
+        <p class="text-indigo-700 italic">${pedido}</p>
+        <time datetime="${dataAtual.toISOString()}" class="text-indigo-400 text-sm block mt-1">${dataFormatada}</time>
+      `;
+
+      // Insere no topo da lista
+      listaPedidos.insertBefore(novoPedido, listaPedidos.firstChild);
+
+      // Mensagem sucesso
       formMessage.textContent = 'Pedido enviado com sucesso! Obrigado por compartilhar sua oração.';
       formMessage.classList.remove('hidden');
 
+      // Limpa formulário
       formOracao.reset();
 
-      // Esconde a mensagem após 5 segundos
+      // Esconde mensagem após 5 segundos
       setTimeout(() => {
         formMessage.classList.add('hidden');
       }, 5000);
     });
   </script>
-
 </body>
 </html>
